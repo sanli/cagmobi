@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panel fixed positioning - jQuery Mobile Demos</title>
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.3.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/leaflet.css" />
+    <script src="js/jquery.js"></script>
+    <script id="panel-init">
+        $( document ).on( "mobileinit", function() {
+            // 设置全局参数
+            $.extend( $.mobile , {
+                pageLoadErrorMessage : '打开页面出错，请稍后重试',
+                defaultPageTransition : 'slide'
+                //phonegapNavigationEnabled : true,
+            });
+        });
+    </script>
+    <script src="js/jquery.mobile-1.4.3.js"></script>
+    <script src="js/jquery.lazyload.js" type="text/javascript"></script>
+    <script src="js/leaflet-src.js"></script>
+    <script src="js/sharepage-mobile.js"></script>
+    <script id="panel-init">
+        $(function() {
+            // 初始化Panel
+            $( "body>[data-role='panel']" ).panel();
+            $( "body ul[data-role='listview']" ).listview();
+        });
+    </script>
+    <!-- <script type="text/javascript" src="cordova.js"></script> -->
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+</head>
+<body>
+
+<!-- 开始页,封面信息，可以放张图片上去 -->
+<div data-role="page" id="main-page" class="my-page" data-title="中华珍宝馆">
+    <div role="main" class="ui-content jqm-content jqm-fullwidth"></div><!-- /content -->
+</div><!-- /page -->
+
+<div data-role="page" id="painting-list-page" class="my-page" data-title="中华珍宝馆">
+    <div data-role="header" data-position="fixed" data-theme="b">
+        <h1>中华珍宝馆 藏品</h1>
+        <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
+        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
+    </div><!-- /header -->
+    <div role="main" class="ui-content jqm-content jqm-fullwidth">
+        <ul id="paintingListRow" data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+        <script type="text/x-dot-template" id="paintinglistTmpl">
+            {{~it.cagstore:painting:index}}
+            <li class="">
+                {{ var uuid = painting._id; }}
+                <a href="#painting-view?uuid={{= uuid }}" class="ui-btn" data-transition="flow">
+                <div><img style=" width: {{= painting.snapSize.width }}px; height: {{= painting.snapSize.height }}px;" class="lazy ui-li-thumb" data-original="{{=it.cdn }}/cagstore/{{=uuid }}/tb.jpg">
+                </div>
+                <h2>{{= painting.paintingName }}</h2>
+                {{? painting.essence && painting.essenceComment }}
+                        <p>{{= painting.essenceComment }}</p>
+                {{? }}
+                <p>{{= painting.age + " " + painting.author }} 
+                    <span class="label label-default"> {{= painting.viewCnt ? '观摩' + painting.viewCnt + '次' : '新发布' }} </span><br></p>
+               </p>
+                <p>{{= painting.areaSize ? painting.areaSize.toLowerCase() +" 厘米" : painting.fileSize }}</p>
+                {{? painting.desc }}
+                    <p>{{= painting.desc }}</p>
+                {{? }}
+            </a></li>
+            {{~}}
+        </script>
+        </ul>
+    </div><!-- /content -->
+    <div data-role="footer" data-position="fixed" data-theme="a">
+        <h4></h4>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<div data-role="page" id="painting-view" data-title="图片浏览">
+    <div role="main" class="ui-content jqm-content" id="map" style="background: #FFFFE0;"></div>
+</div><!-- /page -->
+
+<div data-role="page" id="panel-age-list" data-title="中华珍宝馆 年代">
+    <div data-role="header" data-position="fixed" data-theme="b">
+        <h1>中华珍宝馆 年代</h1>
+        <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
+        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content jqm-content">
+        <ul id="agelist" data-role="listview">
+            <li><a href="#painting-list-page?type=age&age=晋">晋</a></li>
+            <li><a href="#painting-list-page?type=age&=东晋">东晋</a></li>
+            <li><a href="#painting-list-page?type=age&age=晋">五代</a></li>
+            <li><a href="#painting-list-page?type=age&age=唐">唐</a></li>
+            <li><a href="#painting-list-page?type=age&age=金">金</a></li>
+            <li><a href="#painting-list-page?type=age&age=宋">宋</a></li>
+            <li><a href="#painting-list-page?type=age&age=北宋">北宋</a></li>
+            <li><a href="#painting-list-page?type=age&age=南宋">南宋</a></li>
+            <li><a href="#painting-list-page?type=age&age=元">元</a></li>
+            <li><a href="#painting-list-page?type=age&age=明">明</a></li>
+            <li><a href="#painting-list-page?type=age&age=明清">明清</a></li>
+            <li><a href="#painting-list-page?type=age&age=清">清</a></li>
+            <li><a href="#painting-list-page?type=age&age=现代">现代</a></li>
+            <li><a href="#painting-list-page?type=age&age=未知">未知</a></li>
+        </ul>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+<div data-role="page" id="panel-author-list">
+    <div data-role="header" data-position="fixed" data-theme="b">
+        <h1>中华珍宝馆 作者</h1>
+        <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
+        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
+    </div><!-- /header -->
+    <div role="main" class="ui-content jqm-content">
+        <ul data-role="listview" id="author-list">
+        <script type="text/x-dot-template" id="authorlistTmpl">
+            {{~it.authors:author:index}}
+                <li><a href="#painting-list-page?type=author&author={{=author.name }}">{{=author.age + ' ' + author.name }}</a></li>
+            {{~}}
+        </script>
+        </ul>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+<div data-role="page" id="panel-message-list" data-title="中华珍宝馆－系统消息">
+    <div data-role="header" data-position="fixed" data-theme="b">
+        <h1>中华珍宝馆－系统消息</h1>
+        <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
+        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content jqm-content">
+        <ul data-role="listview">
+            <li><h2>更新10副新画作</h2><p>2014年4月12日，有10部新画作发布<a href="#1111">清明上河图</a>，<a href="#1111">清明上河图</a>，<a href="#1111">清明上河图</a></p></li>
+            <li><h2>更新10副新画作</h2><p>2014年4月12日，有10部新画作发布<a href="#1111">清明上河图</a></p></li>
+            <li><h2>更新10副新画作</h2><p>2014年4月12日，有10部新画作发布<a href="#1111">清明上河图</a></p></li>
+            <li><h2>更新10副新画作</h2><p>2014年4月12日，有10部新画作发布<a href="#1111">清明上河图</a></p></li>
+        </ul>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+   <div data-role="panel" data-position-fixed="true" data-display="overlay" data-theme="a" id="nav-panel">
+        <ul data-role="listview">
+            <li>浏览方式</li>
+            <li><a href="#painting-list-page?type=essense">精选藏品</a></li>
+            <li><a href="#panel-age-list?type=age">按年代查看</a></li>
+            <li><a href="#panel-author-list">按作者查看</a></li>
+            <!-- 暂时不支持查询功能
+            <li><a href="#painting-list-page?type=search">查询</a></li>
+            -->
+            <li><a href="#panel-message-list">系统消息</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+    <div data-role="panel" data-position="right" data-position-fixed="true" data-display="overlay" data-theme="a" id="add-form">
+        <ul data-role="listview">
+            <li>我的赏析</li>
+            <li><a href="#panel-fixed-page2"><img src="http://supperdetailpainter.u.qiniudn.com/cagstore/53ba205abe4f0b1ffae45783/temp_17_0.jpg?imageMogr2/crop/!710x541a6619a853" style="top: initial;"><h2>清明上河图</h2><p>4个小儿在种树，还有一个开裆裤</p></a></li>
+            <li><a href="#panel-fixed-page2"><img src="http://supperdetailpainter.u.qiniudn.com/cagstore/53ba205abe4f0b1ffae45783/temp_17_0.jpg?imageMogr2/crop/!710x541a6619a853" style="top: initial;"    ><h2>清明上河图</h2><p>4个小儿在种树，还有一个开裆裤</p></a></li> --?
+        </ul>
+    </div> <!-- /panel -->
+</body>
+</html>
