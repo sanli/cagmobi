@@ -69,16 +69,33 @@
 
 <!-- 推荐藏品列表 -->
 <div data-role="page" id="essense-list-page" class="my-page" data-title="中华珍宝馆">
-    <div data-role="header" data-position="fixed" data-theme="b">
-        <h1>中华珍宝馆 精选藏品</h1>
+    <div data-role="header" data-position="fixed" data-theme="b" data-tap-toggle="false">
+        <h1>中华珍宝馆</h1>
         <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
-        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
+        <a href="http://mygeda.duapp.com" target="_blank" data-icon="info" data-iconpos="notext">信息</a>
     </div><!-- /header -->
     <div role="main" class="ui-content jqm-content jqm-fullwidth">
         <ul id="essenseListRow" data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow"></ul>
     </div><!-- /content -->
-    <div data-role="footer" data-position="fixed" data-theme="a">
+    <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
         <h1 class="ui-title status-bar" role="heading" aria-level="1">精选藏品</h1>
+        <a href="#nav-back" data-icon="arrow-l" data-rel="back" 
+            data-iconpos="notext" style="position: absolute;top: -3px;left: 5px;">返回</a>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<!-- 当代馆 -->
+<div data-role="page" id="modern-list-page" class="my-page" data-title="中华珍宝馆">
+    <div data-role="header" data-position="fixed" data-theme="b" data-tap-toggle="false">
+        <h1>中华珍宝馆</h1>
+        <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
+        <a href="http://mygeda.duapp.com/%E5%BD%93%E4%BB%A3%E9%A6%86/" target="_blank" data-icon="info" data-iconpos="notext">信息</a>
+    </div><!-- /header -->
+    <div role="main" class="ui-content jqm-content jqm-fullwidth">
+        <ul id="modernListRow" data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow"></ul>
+    </div><!-- /content -->
+    <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
+        <h1 class="ui-title status-bar" role="heading" aria-level="1">当代馆</h1>
         <a href="#nav-back" data-icon="arrow-l" data-rel="back" 
             data-iconpos="notext" style="position: absolute;top: -3px;left: 5px;">返回</a>
     </div><!-- /footer -->
@@ -86,15 +103,14 @@
 
 <!--  -->
 <div data-role="page" id="painting-list-page" class="my-page" data-title="中华珍宝馆">
-    <div data-role="header" data-position="fixed" data-theme="b">
+    <div data-role="header" data-position="fixed" data-theme="b" data-tap-toggle="false">
         <h1>中华珍宝馆 藏品分类</h1>
         <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
-        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
     </div><!-- /header -->
     <div role="main" class="ui-content jqm-content jqm-fullwidth">
         <ul id="paintingListRow" data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow"></ul>
     </div><!-- /content -->
-    <div data-role="footer" data-position="fixed" data-theme="a">
+    <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
         <h1 class="ui-title status-bar" role="heading" aria-level="1">藏品分类</h1>
         <a href="#nav-back" data-icon="arrow-l" data-rel="back" 
             data-iconpos="notext" style="position: absolute;top: -3px;left: 5px;">返回</a>
@@ -106,12 +122,11 @@
 </div><!-- /page -->
 
 <div data-role="page" id="panel-age-list" data-title="中华珍宝馆 年代">
-    <div data-role="header" data-position="fixed" data-theme="b">
+    <div data-role="header" data-position="fixed" data-theme="b" data-tap-toggle="false">
         <h1>中华珍宝馆 年代</h1>
         <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
-        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
+        <a href="http://mygeda.duapp.com/%E5%B9%B4%E4%BB%A3%E9%A6%86/" target="_blank" data-icon="info" data-iconpos="notext">信息</a>
     </div><!-- /header -->
-
     <div role="main" class="ui-content jqm-content">
         <ul id="agelist" data-role="listview">
             <li><a href="#painting-list-page?type=age&age=晋">晋</a></li>
@@ -126,17 +141,22 @@
             <li><a href="#painting-list-page?type=age&age=明">明</a></li>
             <li><a href="#painting-list-page?type=age&age=明清">明清</a></li>
             <li><a href="#painting-list-page?type=age&age=清">清</a></li>
-            <li><a href="#painting-list-page?type=age&age=现代">现代</a></li>
+            <li><a href="#painting-list-page?type=age&age=当代">当代</a></li>
             <li><a href="#painting-list-page?type=age&age=未知">未知</a></li>
         </ul>
     </div><!-- /content -->
+    <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
+        <h1 class="ui-title status-bar" role="heading" aria-level="1">年代馆</h1>
+        <a href="#nav-back" data-icon="arrow-l" data-rel="back" 
+            data-iconpos="notext" style="position: absolute;top: -3px;left: 5px;">返回</a>
+    </div><!-- /footer -->
 </div><!-- /page -->
 
 <div data-role="page" id="panel-author-list">
-    <div data-role="header" data-position="fixed" data-theme="b">
+    <div data-role="header" data-position="fixed" data-theme="b" data-tap-toggle="false">
         <h1>中华珍宝馆 作者</h1>
         <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
-        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
+        <a href="http://mygeda.duapp.com/%E4%BD%9C%E8%80%85%E9%A6%86/" target="_blank" data-icon="info" data-iconpos="notext">信息</a>
     </div><!-- /header -->
     <div role="main" class="ui-content jqm-content">
         <script type="text/x-dot-template" id="authorlistTmpl">
@@ -146,13 +166,17 @@
         </script>
         <ul data-role="listview" id="author-list"></ul>
     </div><!-- /content -->
+    <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
+        <h1 class="ui-title status-bar" role="heading" aria-level="1">作者馆</h1>
+        <a href="#nav-back" data-icon="arrow-l" data-rel="back" 
+            data-iconpos="notext" style="position: absolute;top: -3px;left: 5px;">返回</a>
+    </div><!-- /footer -->
 </div><!-- /page -->
 
 <div data-role="page" id="panel-message-list" data-title="中华珍宝馆 新藏品公告">
-    <div data-role="header" data-position="fixed" data-theme="b">
+    <div data-role="header" data-position="fixed" data-theme="b" data-tap-toggle="false">
         <h1>中华珍宝馆 新藏品公告</h1>
         <a href="#nav-panel" data-icon="bars" data-iconpos="notext">选择</a>
-        <!-- <a href="#add-form" data-icon="gear" data-iconpos="notext">标注</a> -->
     </div><!-- /header -->
 
     <div role="main" class="ui-content jqm-content">
@@ -165,18 +189,26 @@
         </script>
         <ul id="message-list" data-role="listview"></ul>
     </div><!-- /content -->
+    <div data-role="footer" data-position="fixed" data-theme="a" data-tap-toggle="false">
+        <h1 class="ui-title status-bar" role="heading" aria-level="1"></h1>
+        <a href="#nav-back" data-icon="arrow-l" data-rel="back" 
+            data-iconpos="notext" style="position: absolute;top: -3px;left: 5px;">返回</a>
+    </div><!-- /footer -->
 </div><!-- /page -->
 
    <div data-role="panel" data-position-fixed="true" data-display="overlay" data-theme="a" id="nav-panel">
         <ul data-role="listview">
             <li>浏览方式</li>
             <li><a href="#essense-list-page?type=essense">精选藏品</a></li>
+            <li><a href="#modern-list-page?type=age&age=当代">当代馆</a></li>
             <li><a href="#panel-age-list">按年代查看</a></li>
             <li><a href="#panel-author-list">按作者查看</a></li>
             <!-- 暂时不支持查询功能
             <li><a href="#painting-list-page?type=search">查询</a></li>
             -->
             <li><a href="#panel-message-list">新藏品公告</a></li>
+            <li><a href="about.html">关于</a></li>
+
         </ul>
     </div><!-- /panel -->
 

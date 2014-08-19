@@ -192,3 +192,7 @@ the images reach their max width: 1019px - 2 x 9px padding = 1001px x 30.9333% =
 
 #painting-view, #map { width: 100%; height: 100%; padding: 0; }
 
+#imgback-link {
+    font-size: 14px;
+}
+

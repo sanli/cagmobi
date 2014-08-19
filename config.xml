@@ -2,7 +2,7 @@
 <widget id="net.mygeda.cag" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>中华珍宝馆</name>
     <description>
-        中华珍宝馆，展示中华文明历代珍贵书画，精细度接近实物，学习和欣赏中华文化的好地方
+        中华珍宝馆，展示中华文明历代珍贵书画，精细度接近实物。这里是学习和欣赏中华文化的好地方。
     </description>
     <author email="santal.li@gmail.com" href="http://zhenbao.duapp.com">
         中华珍宝馆开发团队

@@ -20,7 +20,7 @@
     };
     // jqmState
     $.jqmState = getState;
-
+    
     $.alert = function(html, closetime){
         $.mobile.loading( "show",{
             text:'',

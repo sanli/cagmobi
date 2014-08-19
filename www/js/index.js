@@ -6,6 +6,7 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
+
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -13,21 +14,14 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
+
     // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        console.log("deviceready event fired.");
+        // google分析器
+        //analytics.debugMode();
+        analytics.startTrackerWithId('UA-50311706-3');
         navigator.splashscreen.hide();
-        // setTimeout(function(){
-        //     navigator.splashscreen.hide();    
-        // }, 500);
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        console.log('Received Event: ' + id);
+        StatusBar.hide();
     }
 };
 
@@ -38,7 +32,7 @@ function _cdn(url){
 
 function _cag(url){
     return 'http://zhenbao.duapp.com' + url;
-    //return 'http://localhost:18080' + url;
+    // return 'http://localhost:18080' + url;
 }
 
 // 数据对象
@@ -98,6 +92,18 @@ var Module = {
         return Module;
     },
 
+    // 载入关于中华珍宝馆页面
+    loadAbout : function(state, fn){
+        $('#panel-about').on('click','a.goto-appstore', function(event){
+            event.preventDefault();
+            var tgt = $(event.target),
+                appstoreHref =  tgt.is('a') ? tgt.data('href') : tgt.parents('a').data('href');
+            console.log('appstore-href:' , appstoreHref);
+            //window.open(appstoreHref, '_system', 'location=no');
+            window.open(appstoreHref, '_blank', 'location=no,closebuttoncaption=返回');
+        });
+    },
+
     loadEssense : function(state, fn){
         $.mobile.loading("show", { text : '正在载入精选列表...', textVisible: true})
         $.getJSON(_cag("/cagstore/essence.json") , function(data){
@@ -108,6 +114,22 @@ var Module = {
                 .refreshPaintingList(data, $('#essenseListRow'))
                 .updateStatusBar('精选藏品');
 
+            fn(null);
+            $.mobile.loading( "hide");
+        }).fail(function(){
+            $.alert('连接服务器出错，请稍后重试', 5000);
+        });
+    },
+
+
+    loadModern : function(state, fn){
+        $.mobile.loading("show", { text : '正在载入当代馆列表...', textVisible: true})
+        
+        $.getJSON(_cag("/cagstore/fileinfo.json"), { cond : { age : '当代' }} , function(data){
+            if(data.R === 'N')
+                return $.alert('读取精数据错误，情稍后再试', 3000);
+
+            Module.refreshPaintingList(data, $('#modernListRow'));
             fn(null);
             $.mobile.loading( "hide");
         }).fail(function(){
@@ -165,7 +187,7 @@ var Module = {
     },
 
     loadMessage : function(state, fn){
-        $.mobile.loading("show", { text : '正在载入新藏品消息...', textVisible: true})
+        $.mobile.loading("show", { text : '正在载入新藏品消息...', textVisible: true});
         $.getJSON(_cag("/message.json"), function(data){
             if(data.R === 'N')
                 return $.alert('读取新藏品消息错误，请稍后再试', 3000);
@@ -176,7 +198,8 @@ var Module = {
             });
             $('#message-list').empty()
                 .append(out).listview('refresh');
-            
+            $('#message-list a').each(Module._convertMessageLink);
+
             $.mobile.loading( "hide");
         }).fail(function(){
             $.alert('连接服务器出错，请稍后重试', 5000);
@@ -190,12 +213,33 @@ var Module = {
         });
     },
 
+    // 将网站上使用的link转换为在App中使用的link
+    //   1. 如果该link指向一个图片，需要转换为现实图片的link  
+    //      http://zhenbao.duapp.com/img.html?uuid=53c89d01f9725cbf5ec9c8b6&view=paintingview#uuid=53c89d01f9725cbf5ec9c8b6&view=paintingview
+    //      --> #painting-view?uuid=53ba205abe4f0b1ffae45772 
+    //   2. 如果该link指向一个外部的链接，需要附加上 target="_blank"
+    _convertMessageLink : function(index, link){
+        var $link = $(link),
+            target = $link.attr('href') ;
+        if(/.*img.html\?.*/.test(target)){ //是浏览图片
+            var search = target.match(/uuid=([a-zA-Z0-9]*)/);
+            if(search && search.length > 1){
+                var uuid = search[1];
+            }
+            $link.attr('href', '#painting-view?uuid=' + uuid);
+        }else{
+            $link.click(wrapLinkEvent);
+        }
+    },
+
     // 取得Outline信息，会对取得的Outline进行缓冲，知道程序刷新
     _getOutline : function(fn){
         if(Module.outline)
             return fn(null, Module.outline);
 
+        $.mobile.loading("show", { text : '正在读取藏品信息...', textVisible: true});
         $.getJSON(_cag("/cagstore/outline.json"), function(data){
+            $.mobile.loading("hide");
             Module.outline = data;
             if(data.R === 'N')
                 return $.alert('读取作品信息错误，请稍后重试', 3000);
@@ -204,6 +248,12 @@ var Module = {
         });
     }
 };
+
+function wrapLinkEvent(event){
+    event.preventDefault();
+    var targeturl = $(event.target).attr('href');
+    window.open( targeturl, '_blank', 'location=no,closebuttoncaption=返回');
+}
 
 // 页面控制对象
 var PageView = {
@@ -248,7 +298,7 @@ var PageView = {
                 maxBounds: bounds,
                 minZoom: fileinfo.minlevel,
                 crs: L.CRS.Simple,
-                fullscreenControl: true
+                zoomControl: false
             }).fitBounds( bounds ); 
 
             var la = state.layer || '';
@@ -259,7 +309,7 @@ var PageView = {
             }).addTo(map);
 
             map.attributionControl.setPrefix(
-                '<a href="/index.html" data-rel="back"><span class="glyphicon glyphicon-home"></span>返回中华珍宝馆</a>'
+                '<a id="imgback-link" href="/index.html" data-rel="back"><span class="glyphicon glyphicon-home"></span>返回中华珍宝馆</a>'
             );  
             Module.initMap(map);
             $.mobile.loading( "hide")
@@ -267,7 +317,6 @@ var PageView = {
             $.alert('载入藏品出错，请<a href="#painting-list-page" data-rel="back">返回</a>', 10000);
         });
     },
-
 
     // 清除列表显示页面 
     'painting-list-page-beforechange' : function(page, state, transform){
@@ -324,6 +373,26 @@ var PageView = {
             Module.currentPaintingListUrl = transform.absUrl; 
         }
         Module.loadEssense(state, done);
+    },
+
+
+    'modern-list-page-change' : function(page, state, transform){
+        // 跳过重复载入过程
+        if(Module.currentPaintingListUrl && Module.currentPaintingListUrl === transform.absUrl){
+            // 由于一个未知bug，页面切换后丢失lazyload，需要重新绑定
+            $("img.lazy").lazyload({
+                // fadeIn在Android上的效果不好，所以暂时不使用效果
+                //effect : "fadeIn",
+                skip_invisible : false
+            });
+            return;
+        }
+
+        // 正确显示回调
+        function done(err){ 
+            Module.currentPaintingListUrl = transform.absUrl; 
+        }
+        Module.loadModern(state, done);
     }
 };
 
@@ -333,7 +402,6 @@ var PageView = {
 (function($) {
     // 页面切换前出发的事件，用于清除页面内容
     $( document ).on( "pagecontainerbeforetransition", function( event, data ) {
-        console.log('beforechange',data.toPage.attr('id'));
         var to = data.toPage,
             state = $.jqmState(),
             pageid = to.attr('id'),
@@ -345,11 +413,14 @@ var PageView = {
     });
 
     $(document).on('pagechange', function(event, obj){
-        console.log('pagechange',obj.toPage.attr('id'));
         var to = obj.toPage,
             state = $.jqmState(),
             pageid = to.attr('id'),
             pagechangefn = PageView[pageid+'-change'];
+
+        // track user
+        if(window.analytics && obj && obj.absUrl)
+            analytics.trackView(obj.absUrl);
 
         if(pagechangefn){
             pagechangefn(to, state, obj);
@@ -359,7 +430,6 @@ var PageView = {
     $( document ).bind( "pagecreate", function( e ) {
         var $tgt = $(e.target),
             id = $tgt.attr('id');
-        console.log('pagecreate:', id);
         if( id === 'main-page'){  // 首页直接跳转到精选页面
            $.mobile.changePage( "#essense-list-page?type=essense", { transition: "fade", changeHash: true }); 
         }else if(id === 'panel-author-list'){ // 初始化作者列表
@@ -368,13 +438,15 @@ var PageView = {
             Module.loadAge();
         }else if(id === 'panel-message-list'){
             Module.loadMessage();
+        }else if(id === 'panel-about'){
+            Module.loadAbout();
         }
+        $('a[target=_blank]').click(wrapLinkEvent);
     });
 
     $( window ).on( "navigate", function( event, data ) {
-        console.log( "navigate", data.state );
+        //console.log( "navigate", data.state );
     });
-
 })(jQuery);
 
 
@@ -400,7 +472,7 @@ var MyControl = L.Control.extend({
     },
 
     click : function(e){
-        console.log("should replace with implementing.");
+        //console.log("should replace with implementing.");
     }
 });
 

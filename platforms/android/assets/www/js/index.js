@@ -6,6 +6,7 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
+
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -13,21 +14,14 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
+
     // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        console.log("deviceready event fired.");
+        // google分析器
+        //analytics.debugMode();
+        analytics.startTrackerWithId('UA-50311706-3');
         navigator.splashscreen.hide();
-        // setTimeout(function(){
-        //     navigator.splashscreen.hide();    
-        // }, 500);
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        console.log('Received Event: ' + id);
+        StatusBar.hide();
     }
 };
 
@@ -98,6 +92,17 @@ var Module = {
         return Module;
     },
 
+    // 载入关于中华珍宝馆页面
+    loadAbout : function(state, fn){
+        $('#panel-about').on('click','a.goto-appstore', function(event){
+            event.preventDefault();
+            var tgt = $(event.target),
+                appstoreHref =  tgt.is('a') ? tgt.data('href') : tgt.parents('a').data('href');
+            console.log('appstore-href:' , appstoreHref);
+            window.open(appstoreHref, '_system', 'location=no');
+        });
+    },
+
     loadEssense : function(state, fn){
         $.mobile.loading("show", { text : '正在载入精选列表...', textVisible: true})
         $.getJSON(_cag("/cagstore/essence.json") , function(data){
@@ -165,7 +170,7 @@ var Module = {
     },
 
     loadMessage : function(state, fn){
-        $.mobile.loading("show", { text : '正在载入新藏品消息...', textVisible: true})
+        $.mobile.loading("show", { text : '正在载入新藏品消息...', textVisible: true});
         $.getJSON(_cag("/message.json"), function(data){
             if(data.R === 'N')
                 return $.alert('读取新藏品消息错误，请稍后再试', 3000);
@@ -195,7 +200,9 @@ var Module = {
         if(Module.outline)
             return fn(null, Module.outline);
 
+        $.mobile.loading("show", { text : '正在读取藏品信息...', textVisible: true});
         $.getJSON(_cag("/cagstore/outline.json"), function(data){
+            $.mobile.loading("hide");
             Module.outline = data;
             if(data.R === 'N')
                 return $.alert('读取作品信息错误，请稍后重试', 3000);
@@ -248,7 +255,7 @@ var PageView = {
                 maxBounds: bounds,
                 minZoom: fileinfo.minlevel,
                 crs: L.CRS.Simple,
-                fullscreenControl: true
+                zoomControl: false
             }).fitBounds( bounds ); 
 
             var la = state.layer || '';
@@ -259,7 +266,7 @@ var PageView = {
             }).addTo(map);
 
             map.attributionControl.setPrefix(
-                '<a href="/index.html" data-rel="back"><span class="glyphicon glyphicon-home"></span>返回中华珍宝馆</a>'
+                '<a id="imgback-link" href="/index.html" data-rel="back"><span class="glyphicon glyphicon-home"></span>返回中华珍宝馆</a>'
             );  
             Module.initMap(map);
             $.mobile.loading( "hide")
@@ -333,7 +340,6 @@ var PageView = {
 (function($) {
     // 页面切换前出发的事件，用于清除页面内容
     $( document ).on( "pagecontainerbeforetransition", function( event, data ) {
-        console.log('beforechange',data.toPage.attr('id'));
         var to = data.toPage,
             state = $.jqmState(),
             pageid = to.attr('id'),
@@ -345,11 +351,14 @@ var PageView = {
     });
 
     $(document).on('pagechange', function(event, obj){
-        console.log('pagechange',obj.toPage.attr('id'));
         var to = obj.toPage,
             state = $.jqmState(),
             pageid = to.attr('id'),
             pagechangefn = PageView[pageid+'-change'];
+
+        // track user
+        if(window.analytics && obj && obj.absUrl)
+            analytics.trackView(obj.absUrl);
 
         if(pagechangefn){
             pagechangefn(to, state, obj);
@@ -359,7 +368,6 @@ var PageView = {
     $( document ).bind( "pagecreate", function( e ) {
         var $tgt = $(e.target),
             id = $tgt.attr('id');
-        console.log('pagecreate:', id);
         if( id === 'main-page'){  // 首页直接跳转到精选页面
            $.mobile.changePage( "#essense-list-page?type=essense", { transition: "fade", changeHash: true }); 
         }else if(id === 'panel-author-list'){ // 初始化作者列表
@@ -368,11 +376,13 @@ var PageView = {
             Module.loadAge();
         }else if(id === 'panel-message-list'){
             Module.loadMessage();
+        }else if(id === 'panel-about'){
+            Module.loadAbout();
         }
     });
 
     $( window ).on( "navigate", function( event, data ) {
-        console.log( "navigate", data.state );
+        //console.log( "navigate", data.state );
     });
 
 })(jQuery);
@@ -400,7 +410,7 @@ var MyControl = L.Control.extend({
     },
 
     click : function(e){
-        console.log("should replace with implementing.");
+        //console.log("should replace with implementing.");
     }
 });
 
